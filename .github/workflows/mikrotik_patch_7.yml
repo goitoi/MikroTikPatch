@@ -135,7 +135,14 @@ jobs:
         run: |
             wget -nv -O changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} https://${{ env.MIKRO_UPGRADE_URL }}/routeros/$LATEST_VERSION/CHANGELOG
             cat changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} 
-
+      - name: Upload translation
+        uses: actions/upload-artifact@v4
+        with:
+          name: version_info-${{ matrix.channel }}
+          path: |
+            ./translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
+            ./version_info-${{ matrix.channel }}
+            
   RunPatch:
     needs: [Set_Runner,PreparePatch]
     runs-on: ubuntu-latest
