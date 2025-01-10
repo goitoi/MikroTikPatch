@@ -105,27 +105,13 @@ jobs:
         run: |
             wget -nv -O changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} https://${{ env.MIKRO_UPGRADE_URL }}/routeros/$LATEST_VERSION/CHANGELOG
             cat changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} 
-    
-      - name: cache translation
-        id: cache-translation
-        uses: actions/cache@v4
-        with:
-            path: |
-                ./translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-            key: translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-
-      - name: Translate ChangeLog
-        if: steps.cache-translation.outputs.cache-hit != 'true'
-        run: |
-            pip install requests
-            python3 translate.py changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}  translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
         
       - name: Upload translation
         uses: actions/upload-artifact@v4
         with:
           name: version_info-${{ matrix.channel }}
           path: |
-            ./translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
+            ./changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
             ./version_info-${{ matrix.channel }}
     
           
@@ -346,15 +332,15 @@ jobs:
             if [ "${{ inputs.latest }}" != "false" ];then
                 echo $LATEST_VERSION $BUILD_TIME | sudo tee ./routeros/NEWEST6.${{ matrix.channel }}
             fi
-            sudo cp translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }} ./routeros/$LATEST_VERSION/CHANGELOG
+            sudo cp changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} ./routeros/$LATEST_VERSION/CHANGELOG
             sudo cp ./all_packages/*.npk ./routeros/$LATEST_VERSION/
             sudo chown -R root:root ./routeros/
-            sudo apt-get install -y lftp > /dev/null 2>&1
-            sudo -E lftp -u ${{ secrets.SSH_USERNAME }},'${{ secrets.SSH_PASSWORD }}' sftp://${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PORT }} <<EOF
-            set sftp:auto-confirm yes
-            mirror --reverse --verbose --only-newer ./routeros ${{ secrets.SSH_DIRECTORY }}
-            bye
-            EOF
+            # sudo apt-get install -y lftp > /dev/null 2>&1
+            # sudo -E lftp -u ${{ secrets.SSH_USERNAME }},'${{ secrets.SSH_PASSWORD }}' sftp://${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PORT }} <<EOF
+            # set sftp:auto-confirm yes
+            # mirror --reverse --verbose --only-newer ./routeros ${{ secrets.SSH_DIRECTORY }}
+            # bye
+            # EOF
         
       - name: Clear Cloudflare cache
         if: steps.prepare_envs.outputs.IS_LATEST == 'true'
@@ -385,7 +371,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
             name: "RouterOS ${{ env.LATEST_VERSION }} ${{ matrix.channel }} ${{ matrix.arch }}"
-            body_path: "translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}"
+            body_path: "changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}"
             tag_name: ${{ env.LATEST_VERSION }}${{ env.ARCH }}
             make_latest:  false
             prerelease:  ${{ matrix.channel == 'testing' }}
