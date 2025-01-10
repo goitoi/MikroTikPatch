@@ -159,7 +159,7 @@ jobs:
         python-version: '3.11'
         
     - name: Get directory
-        run: ls
+      run: ls
     
     - name: prepare envs
       id: prepare_envs
