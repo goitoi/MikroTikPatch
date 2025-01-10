@@ -140,6 +140,7 @@ jobs:
         with:
           name: version_info-${{ matrix.channel }}
           path: |
+            ./changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
             ./version_info-${{ matrix.channel }}
             
   RunPatch:
@@ -539,7 +540,7 @@ jobs:
         if [ "${{ inputs.latest }}" != "false" ];then
           echo $LATEST_VERSION $BUILD_TIME | sudo tee ./routeros/NEWESTa7.${{ matrix.channel }}
         fi
-        sudo cp translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }} ./routeros/$LATEST_VERSION/CHANGELOG
+        sudo cp changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} ./routeros/$LATEST_VERSION/CHANGELOG
         sudo cp ./all_packages/*.npk ./routeros/$LATEST_VERSION/
         sudo chown -R root:root ./routeros/
         sudo apt-get install -y lftp > /dev/null 2>&1
@@ -578,7 +579,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         name: "RouterOS ${{ env.LATEST_VERSION }} ${{ matrix.arch }}"
-        body_path: "translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}"
+        body_path: "changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}"
         tag_name: ${{ env.LATEST_VERSION }}${{ env.ARCH }}
         make_latest:  ${{ matrix.channel == 'stable'}} && ${{ matrix.arch == 'x86'}}
         prerelease:  ${{ matrix.channel == 'testing' }}
