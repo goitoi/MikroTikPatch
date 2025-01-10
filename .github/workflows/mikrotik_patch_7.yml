@@ -135,28 +135,6 @@ jobs:
         run: |
             wget -nv -O changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} https://${{ env.MIKRO_UPGRADE_URL }}/routeros/$LATEST_VERSION/CHANGELOG
             cat changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }} 
-    
-      - name: cache translation
-        id: cache-translation
-        uses: actions/cache@v4
-        with:
-            path: |
-                ./translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-            key: translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-
-      - name: Translate ChangeLog
-        if: steps.cache-translation.outputs.cache-hit != 'true'
-        run: |
-            pip install requests
-            python3 translate.py changelog-${{ env.LATEST_VERSION }}-${{ matrix.channel }}  translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-        
-      - name: Upload translation
-        uses: actions/upload-artifact@v4
-        with:
-          name: version_info-${{ matrix.channel }}
-          path: |
-            ./translation-${{ env.LATEST_VERSION }}-${{ matrix.channel }}
-            ./version_info-${{ matrix.channel }}
 
   RunPatch:
     needs: [Set_Runner,PreparePatch]
@@ -179,12 +157,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-
-    - name: Download translation
-      uses: actions/download-artifact@v4
-      with:
-          name: version_info-${{ matrix.channel }}
-          path: .
 
     - name: prepare envs
       id: prepare_envs
