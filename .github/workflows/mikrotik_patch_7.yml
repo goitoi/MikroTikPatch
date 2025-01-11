@@ -256,6 +256,7 @@ jobs:
       with:
         path: |
           netinstall.zip
+          netinstall64.zip
           netinstall.tar.gz
         key: netinstall-${{ env.LATEST_VERSION }}
 
@@ -263,6 +264,7 @@ jobs:
       if: steps.prepare_envs.outputs.IS_LATEST == 'true' && matrix.arch == 'x86' && steps.cache-netinstall.outputs.cache-hit != 'true'
       run: |
         sudo wget -nv -O netinstall.zip https://download.mikrotik.com/routeros/$LATEST_VERSION/netinstall-$LATEST_VERSION.zip
+        sudo wget -nv -O netinstall64.zip https://download.mikrotik.com/routeros/$LATEST_VERSION/netinstall64-$LATEST_VERSION.zip
         sudo wget -nv -O netinstall.tar.gz https://download.mikrotik.com/routeros/$LATEST_VERSION/netinstall-$LATEST_VERSION.tar.gz
 
     - name: Patch netinstall ${{ env.LATEST_VERSION }}
@@ -271,6 +273,9 @@ jobs:
         sudo unzip netinstall.zip
         sudo -E python3 patch.py netinstall netinstall.exe
         sudo zip netinstall-$LATEST_VERSION.zip ./netinstall.exe
+        sudo unzip netinstall64.zip
+        sudo -E python3 patch.py netinstall netinstall64.exe
+        sudo zip netinstall64-$LATEST_VERSION.zip ./netinstall64.exe
         sudo tar -xvf netinstall.tar.gz
         sudo -E python3 patch.py netinstall netinstall-cli
         sudo tar -czvf netinstall-$LATEST_VERSION.tar.gz ./netinstall-cli
@@ -589,4 +594,5 @@ jobs:
           mikrotik-${{ env.LATEST_VERSION }}${{ env.ARCH }}.iso
           chr-${{ env.LATEST_VERSION }}*.zip
           netinstall-${{ env.LATEST_VERSION }}.*
+          netinstall64-${{ env.LATEST_VERSION }}.*
           install-image-${{ env.LATEST_VERSION }}.zip
