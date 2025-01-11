@@ -379,7 +379,6 @@ jobs:
                 mikrotik-${{ env.LATEST_VERSION }}.iso
                 chr-${{ env.LATEST_VERSION }}*.zip
                 install-image-${{ env.LATEST_VERSION }}.zip
-                routeros-x86-${{ env.LATEST_VERSION }}.npk
                 all_packages-x86-${{ env.LATEST_VERSION }}.zip
                 routeros-${{ matrix.arch }}-${{ env.LATEST_VERSION }}.npk
                 all_packages-${{ matrix.arch }}-${{ env.LATEST_VERSION }}.zip
