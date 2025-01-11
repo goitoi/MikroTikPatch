@@ -376,9 +376,9 @@ jobs:
             make_latest:  false
             prerelease:  ${{ matrix.channel == 'testing' }}
             files: |
-                mikrotik-${{ env.LATEST_VERSION }}.iso
+                routeros-${{ env.LATEST_VERSION }}${{ env.ARCH }}.npk
+                all_packages-*-${{ env.LATEST_VERSION }}.zip
+                mikrotik-${{ env.LATEST_VERSION }}${{ env.ARCH }}.iso
                 chr-${{ env.LATEST_VERSION }}*.zip
+                netinstall-${{ env.LATEST_VERSION }}.*
                 install-image-${{ env.LATEST_VERSION }}.zip
-                all_packages-x86-${{ env.LATEST_VERSION }}.zip
-                routeros-${{ matrix.arch }}-${{ env.LATEST_VERSION }}.npk
-                all_packages-${{ matrix.arch }}-${{ env.LATEST_VERSION }}.zip
