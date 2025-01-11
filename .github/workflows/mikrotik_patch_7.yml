@@ -270,10 +270,10 @@ jobs:
     - name: Patch netinstall ${{ env.LATEST_VERSION }}
       if: steps.prepare_envs.outputs.IS_LATEST == 'true' && matrix.arch == 'x86'
       run: |
-        sudo unzip netinstall.zip
+        sudo unzip netinstall.zip netinstall.exe
         sudo -E python3 patch.py netinstall netinstall.exe
         sudo zip netinstall-$LATEST_VERSION.zip ./netinstall.exe
-        sudo unzip netinstall64.zip
+        sudo unzip netinstall64.zip netinstall64.exe
         sudo -E python3 patch.py netinstall netinstall64.exe
         sudo zip netinstall64-$LATEST_VERSION.zip ./netinstall64.exe
         sudo tar -xvf netinstall.tar.gz
