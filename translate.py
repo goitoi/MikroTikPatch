@@ -14,11 +14,11 @@ def translate_text(text):
     
     # 请求体
     data = {
-        'model': 'gpt-4o-mini',  # 或其他模型
+        'model': 'gpt-4o',  # 或其他模型
         'messages': [
             {
                 'role': 'system',
-                'content': f'Act as an Chinese translator, user will sent you Mikrotik Change log to you in English, translate to Chinese. Keep the meaning same. Do not stop until finished.'
+                'content': f'将mikrotik changelog翻译成中文。1.原文和译文在同一行对照输出，形如"原文\t译文"。空行无需翻译。2.译文忽略形如"*) subject -"的字段；示例 输入 What\'s new in 7.17rc6 (2025-Jan-07 10:54):\n*) container - improved "start-on-boot" stability; 输出 7.17rc6 的新功能（2025年1月7日 10:54）： \noutput *) container - improved "start-on-boot" stability;	改善了“开机启动”的稳定性；'
             },
             {
                 'role': 'user',
@@ -47,12 +47,15 @@ def main(input_file, output_file):
     for i in range(0, len(english_text.split('\n')), 20):
         text = '\n'.join(english_text.split('\n')[i:i+20])
         translated_text += translate_text(text) + '\n'
+        print(f'{i}/{len(english_text.splitlines())}')
     
 
     if translated_text:
-        # 将翻译后的文本和原文写入输出文件
         with open(output_file, 'w', encoding='utf-8') as f:
-            f.write("This is a Patched Version of routerOS.For Educational Purpose Only\n\n Refer to https://github.com/fujr/MikroTikPatch\n\n" + translated_text + '\n\n' + english_text)
+            f.write(translated_text)
+            
+
+        
 
 if __name__ == "__main__":
     input = sys.argv[1]
